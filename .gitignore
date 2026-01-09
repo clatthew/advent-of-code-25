@@ -1,3 +1,4 @@
 venv
 input
 **.pyc
+test/__init__.py
