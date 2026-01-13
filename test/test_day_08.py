@@ -7,7 +7,8 @@ from src.day_08 import (
     get_distance_matrix,
     get_closest_pairings,
     triangular_matrix,
-    wire_junction_boxes,
+    build_circuits,
+    get_result,
 )
 
 from pprint import pprint
@@ -128,8 +129,8 @@ class Testget_closest_pairings:
         assert result == expected
 
 
-class Testwire_junction_boxes:
-    @mark.skip
+class Testbuild_circuits:
+    # @mark.skip
     @mark.it("small example")
     def test_1(self):
         box_positions = [
@@ -139,12 +140,25 @@ class Testwire_junction_boxes:
             [255, 256, 256],
         ]
         expected = [[1, 1, 0], [0, 1], [0]]
-        result = wire_junction_boxes(box_positions, 3)
+        result = build_circuits(box_positions, 3)
         assert result == expected
 
     @mark.it("test data")
     def test_2(self, test_input):
         expected = [[1, 1, 0], [0, 1], [0]]
-        result = wire_junction_boxes(test_input, 10)
-        pprint(result)
+        result = build_circuits(test_input, 10)
+        assert result == expected
+
+
+class Testget_result:
+    @mark.it("test data")
+    def test_1(self, test_input):
+        expected = 40
+        result = get_result(test_input, 10)
+        assert result == expected
+
+    @mark.it("day 8 input")
+    def test_2(self, day_08_input):
+        expected = 40
+        result = get_result(day_08_input, 1000)
         assert result == expected

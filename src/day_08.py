@@ -1,4 +1,4 @@
-from math import sqrt
+from math import sqrt, prod
 from src.day_05 import sort_by
 from pprint import pprint
 from copy import deepcopy
@@ -29,18 +29,32 @@ def get_closest_pairings(distance_matrix, n):
     distances = []
     for i, row in enumerate(distance_matrix):
         for j, distance in enumerate(row):
-            distances.append({"connection": [i, j + 1], "distance": distance})
+            distances.append({"connection": [i, i + j + 1], "distance": distance})
     return sort_by(distances, lambda x: x["distance"])[:n]
 
 
-def wire_junction_boxes(box_positions, n):
+def build_circuits(box_positions, n):
+    # sorting the pairings won't be sufficient to ensure minimum amount of circuits
     closest_pairings = get_closest_pairings(get_distance_matrix(box_positions), n)
-    connections = triangular_matrix(len(box_positions) - 1, ".")
-    for pairing in closest_pairings:
+    closest_pairings = sort_by(closest_pairings, lambda x: x["connection"][0])
+    circuits = [closest_pairings[0]["connection"]]
+    for pairing in closest_pairings[1:]:
         pairing = pairing["connection"]
-        print(pairing)
-        connections[pairing[0]][pairing[1] - 1] = "O"
-    return connections
+        inserted = False
+        for circuit in circuits:
+            if pairing[0] in circuit:
+                circuit.append(pairing[1])
+                inserted = True
+                continue
+            elif pairing[1] in circuit:
+                circuit.append(pairing[0])
+                inserted = True
+                continue
+
+        if not inserted:
+            circuits.append(pairing)
+    return [list(set(circuit)) for circuit in circuits]
 
 
-# why are there pairings where the second number is smaller than the first??
+def get_result(box_positions, n):
+    return prod([len(circuit) for circuit in build_circuits(box_positions, n)[:3]])
