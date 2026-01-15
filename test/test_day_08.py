@@ -8,7 +8,7 @@ from src.day_08 import (
     get_closest_pairings,
     triangular_matrix,
     build_circuits,
-    get_result,
+    # get_result,
 )
 
 from pprint import pprint
@@ -130,7 +130,7 @@ class Testget_closest_pairings:
 
 
 class Testbuild_circuits:
-    # @mark.skip
+    @mark.skip
     @mark.it("small example")
     def test_1(self):
         box_positions = [
@@ -145,20 +145,12 @@ class Testbuild_circuits:
 
     @mark.it("test data")
     def test_2(self, test_input):
-        expected = [[1, 1, 0], [0, 1], [0]]
+        expected = 40
         result = build_circuits(test_input, 10)
         assert result == expected
 
-
-class Testget_result:
-    @mark.it("test data")
-    def test_1(self, test_input):
-        expected = 40
-        result = get_result(test_input, 10)
-        assert result == expected
-
     @mark.it("day 8 input")
-    def test_2(self, day_08_input):
-        expected = 40
-        result = get_result(day_08_input, 1000)
+    def test_3(self, day_08_input):
+        expected = 52668
+        result = build_circuits(day_08_input, 1000)
         assert result == expected

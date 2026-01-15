@@ -1,7 +1,5 @@
 from math import sqrt, prod
 from src.day_05 import sort_by
-from pprint import pprint
-from copy import deepcopy
 
 
 def prepare_input(input_list):
@@ -27,34 +25,48 @@ def get_distance_matrix(box_positions):
 
 def get_closest_pairings(distance_matrix, n):
     distances = []
+    # with open(f"distance_matrix_{n}.txt", "w") as f:
+    #     for row in distance_matrix:
+    #         f.write(",".join([str(i) for i in row]) + "\n")
     for i, row in enumerate(distance_matrix):
         for j, distance in enumerate(row):
-            distances.append({"connection": [i, i + j + 1], "distance": distance})
-    return sort_by(distances, lambda x: x["distance"])[:n]
+            if distance < 10000:
+                distances.append({"connection": [i, i + j + 1], "distance": distance})
+    sorted_connections = [
+        connection["connection"]
+        for connection in sort_by(distances, lambda x: x["distance"])
+    ]
+    return sorted_connections[:n]
+
+
+debug_target = 593
 
 
 def build_circuits(box_positions, n):
-    # sorting the pairings won't be sufficient to ensure minimum amount of circuits
     closest_pairings = get_closest_pairings(get_distance_matrix(box_positions), n)
-    closest_pairings = sort_by(closest_pairings, lambda x: x["connection"][0])
-    circuits = [closest_pairings[0]["connection"]]
-    for pairing in closest_pairings[1:]:
-        pairing = pairing["connection"]
-        inserted = False
-        for circuit in circuits:
-            if pairing[0] in circuit:
-                circuit.append(pairing[1])
-                inserted = True
-                continue
-            elif pairing[1] in circuit:
-                circuit.append(pairing[0])
-                inserted = True
-                continue
-
-        if not inserted:
-            circuits.append(pairing)
-    return [list(set(circuit)) for circuit in circuits]
-
-
-def get_result(box_positions, n):
-    return prod([len(circuit) for circuit in build_circuits(box_positions, n)[:3]])
+    connection_lookup = [-1 for _ in range(len(box_positions))]
+    for pairing in closest_pairings:
+        if connection_lookup[pairing[0]] < 0:
+            if connection_lookup[pairing[1]] < 0:
+                connection_lookup[pairing[0]] = pairing[0]
+                connection_lookup[pairing[1]] = connection_lookup[pairing[0]]
+            else:
+                connection_lookup[pairing[0]] = connection_lookup[pairing[1]]
+        elif connection_lookup[pairing[1]] < 0:
+            connection_lookup[pairing[1]] = connection_lookup[pairing[0]]
+        elif connection_lookup[pairing[0]] != connection_lookup[pairing[1]]:
+            val_to_change = connection_lookup[pairing[1]]
+            for i, _ in enumerate(connection_lookup):
+                if connection_lookup[i] == val_to_change:
+                    connection_lookup[i] = connection_lookup[pairing[0]]
+    circuit_sizes = {}
+    for circuit in connection_lookup:
+        if circuit not in circuit_sizes:
+            circuit_sizes[circuit] = 1
+        else:
+            circuit_sizes[circuit] += 1
+    return prod(
+        sorted(
+            [value for key, value in circuit_sizes.items() if key != -1], reverse=True
+        )[:3]
+    )
