@@ -6,9 +6,8 @@ from src.day_08 import (
     sqrt,
     get_distance_matrix,
     get_closest_pairings,
-    triangular_matrix,
     build_circuits,
-    # get_result,
+    find_last_connection,
 )
 
 from pprint import pprint
@@ -153,4 +152,18 @@ class Testbuild_circuits:
     def test_3(self, day_08_input):
         expected = 52668
         result = build_circuits(day_08_input, 1000)
+        assert result == expected
+
+
+class Testfind_last_connection:
+    @mark.it("test data")
+    def test_1(self, test_input):
+        expected = 25272
+        result = find_last_connection(test_input)
+        assert result == expected
+
+    @mark.it("day 8 input")
+    def test_2(self, day_08_input):
+        expected = 25272
+        result = find_last_connection(day_08_input, 20000)
         assert result == expected
