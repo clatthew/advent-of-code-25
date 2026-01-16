@@ -10,8 +10,6 @@ from src.day_08 import (
     find_last_connection,
 )
 
-from pprint import pprint
-
 
 @fixture
 def test_input():
@@ -164,6 +162,6 @@ class Testfind_last_connection:
 
     @mark.it("day 8 input")
     def test_2(self, day_08_input):
-        expected = 25272
-        result = find_last_connection(day_08_input, 20000)
+        expected = 1474050600
+        result = find_last_connection(day_08_input)
         assert result == expected

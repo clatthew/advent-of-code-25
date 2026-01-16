@@ -40,7 +40,7 @@ def make_connection(pairing, connection_lookup):
     if connection_lookup[pairing[0]] < 0:
         if connection_lookup[pairing[1]] < 0:
             connection_lookup[pairing[0]] = pairing[0]
-            connection_lookup[pairing[1]] = connection_lookup[pairing[0]]
+            connection_lookup[pairing[1]] = pairing[0]
         else:
             connection_lookup[pairing[0]] = connection_lookup[pairing[1]]
     elif connection_lookup[pairing[1]] < 0:
@@ -71,7 +71,7 @@ def build_circuits(box_positions, n):
     )
 
 
-def find_last_connection(box_positions, max_dist=10000):
+def find_last_connection(box_positions, max_dist=5000):
     closest_pairings = get_closest_pairings(
         get_distance_matrix(box_positions), max_dist
     )
@@ -83,4 +83,4 @@ def find_last_connection(box_positions, max_dist=10000):
                 box_positions[closest_pairings[i][0]][0]
                 * box_positions[closest_pairings[i][1]][0]
             )
-    return "try higher max distance"
+    return find_last_connection(box_positions, max_dist + 5000)
